@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ugnius – Network roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0593C6; --bg:#FCFFFF; --pink:#D83995;
+  --ink:#0B2A36; --muted:#4D6B77; --track:#D3ECF5;
+  --stripeA:#E6F5FA; --stripeB:#F4FBFD; --accent:#0593C6; --hot:#D83995;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#08171E; --ink:#E8F6FA; --muted:#9DB9C4; --track:#1B3A47;
+    --stripeA:#0F2733; --stripeB:#0B1F29; --accent:#2BB4E6; --hot:#EC5FB1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08171E; --ink:#E8F6FA; --muted:#9DB9C4; --track:#1B3A47;
+  --stripeA:#0F2733; --stripeB:#0B1F29; --accent:#2BB4E6; --hot:#EC5FB1;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 Nunito,system-ui,sans-serif}
+h1,h2{font-family:Nunito,system-ui,sans-serif;letter-spacing:-.01em}
+a{color:var(--accent)}
+a:focus-visible{outline:3px solid var(--hot);outline-offset:3px}
+
+header{max-width:900px;margin:0 auto;padding:12vh 24px 8vh}
+header h1{font-size:clamp(2.6rem,7vw,5rem);line-height:1.05;font-weight:900}
+header h1 span{color:var(--accent)}
+header p{max-width:52ch;margin-top:22px;color:var(--muted);font-size:1.15rem}
+.road{position:relative;max-width:1000px;margin:0 auto;padding:0 24px 12vh}
+.line,.fill{position:absolute;left:50%;top:0;bottom:12vh;width:4px;margin-left:-2px;border-radius:2px}
+.line{background:var(--track)}
+.fill{background:linear-gradient(var(--blue),var(--pink));bottom:auto;height:0;transition:height .15s linear}
+
+.stop{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:center;padding:7vh 0}
+.stop:nth-child(even) .shot{order:-1}
+.dot{position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;
+  background:var(--bg);border:4px solid var(--track);transition:border-color .5s,background .5s}
+.stop.on .dot{border-color:var(--hot);background:var(--hot)}
+
+.text,.shot{opacity:0;transition:opacity 1s ease,transform 1s ease}
+.text{transform:translateX(-24px)}
+.shot{transform:translateX(24px)}
+.stop:nth-child(even) .text{transform:translateX(24px)}
+.stop:nth-child(even) .shot{transform:translateX(-24px)}
+.stop.on .text,.stop.on .shot{opacity:1;transform:none}
+.stop.on .shot{transition-delay:.25s}
+
+.when{color:var(--hot);font-weight:500;font-size:.95rem}
+h2{font-size:1.9rem;line-height:1.15;margin:4px 0 10px;font-weight:800}
+.text p{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;list-style:none;padding:0}
+.tags li{padding:2px 12px;border:1.5px solid var(--accent);border-radius:99px;color:var(--accent);font-size:.88rem}
+
+.shot{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;
+  background:repeating-linear-gradient(45deg,var(--stripeA) 0 14px,var(--stripeB) 14px 28px);border:2px solid var(--track);transition:border-color .2s ease}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot::after{content:attr(data-hint);position:absolute;inset:0;display:grid;place-items:center;padding:20px;
+  text-align:center;color:var(--accent);font-size:.9rem;z-index:0}
+.shot img{z-index:1}
+.shot.fit img{object-fit:contain}
+.gallery{aspect-ratio:4/3;transition:aspect-ratio .2s ease}
+.gallery .slides{position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;z-index:1}
+.gallery .slides::-webkit-scrollbar{display:none}
+.gallery .slides img{position:static;flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;object-fit:contain;background:#08171E}
+.dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2}
+.dots button{width:10px;height:10px;padding:0;border:0;border-radius:99px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.3);cursor:pointer;transition:width .3s,background .3s}
+.dots button.on{width:28px;background:var(--hot)}
+.dots button:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+
+footer{max-width:900px;margin:0 auto;padding:6vh 24px 14vh;text-align:center}
+footer h2{font-size:2.4rem}
+footer p{color:var(--muted);margin:10px 0 20px}
+.btn{display:inline-block;padding:12px 26px;background:#C42F85;color:#fff;border-radius:99px;text-decoration:none;font-weight:500}
+.btn:hover{background:#0577A1}
+.theme{position:fixed;top:14px;right:14px;z-index:10;padding:8px 16px;border-radius:99px;border:2px solid var(--accent);
+  background:var(--bg);color:var(--accent);font:inherit;font-weight:800;font-size:.9rem;cursor:pointer}
+.theme:hover{background:var(--accent);color:var(--bg)}
+.theme:focus-visible{outline:3px solid var(--hot);outline-offset:3px}
+
+@media (max-width:760px){
+  .line,.fill{left:34px}
+  .dot{left:34px;top:7vh;margin-top:0}
+  .stop{grid-template-columns:1fr;gap:20px;padding:6vh 0 6vh 58px}
+  .stop:nth-child(even) .shot{order:0}
+  .text,.shot,.stop:nth-child(even) .text,.stop:nth-child(even) .shot{transform:translateY(20px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .text,.shot{transition:none;opacity:1;transform:none!important}
+}
+</style>
+</head>
+<body>
+<button class="theme" id="theme" type="button" aria-label="Switch colour theme">Dark</button>
+
+<header>
+  <h1>Hi, I'm <span>Ugnius.</span></h1>
+  <p>Computer science student in Lithuania, aiming at network engineering. Below is the path so far: events, switches, servers and scripts.</p>
+</header>
+
+<main class="road" id="road">
+  <div class="line"></div><div class="fill" id="fill"></div>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">Robotics</div>
+      <h2>Robotics</h2>
+      <p>I participated in robotics competitions that took place in Lithuania, Latvia, Estonia and Poland. I Won numerous awards in categories such as Mini sumo, LEGO sumo and Line following. This was my first experience with problem-solving.</p>
+      <ul class="tags"><li>Teamwork</li><li>Problem solving</li><li>Competition</li></ul>
+    </div>
+    <div class="shot" data-hint="Add img/robotics.png">
+      <img src="img/robotics.png" alt="Robotics" onerror="this.remove()">
+    </div>
+  </section>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">2025</div>
+      <h2>BetaLAN'25: 250 players</h2>
+      <p>I was the event coordinator and also did the electrical infrastructure. On the network side I did the cabling, VLANs, Wi-Fi, DHCP and the Grafana setup, with a colleague teaching me so I could take over from him. 14 switches, a 10 Gbps uplink, and CS and Minecraft servers running locally. We monitored switch CPU and memory in Grafana, pinged every switch to see it was alive, and got Zabbix alerts. This is where I first learned about SNMP.</p>
+      <ul class="tags"><li>VLANs</li><li>DHCP</li><li>Wi-Fi</li><li>Grafana</li><li>Zabbix</li><li>SNMP</li></ul>
+    </div>
+    <div class="shot gallery" data-hint="Add img/beta.jpg, beta1.jpg, beta2.jpg, beta3.png">
+      <div class="slides">
+        <img src="img/beta.jpg" alt="BetaLAN'25 setup" onerror="this.remove()">
+        <img src="img/beta1.jpg" alt="Workstation" onerror="this.remove()">
+        <img src="img/beta2.jpg" alt="Switches" onerror="this.remove()">
+        <img src="img/beta3.png" alt="Grafana dashboard" onerror="this.remove()">
+      </div>
+    </div>
+  </section>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">2026</div>
+      <h2>Ugninis skydas'26</h2>
+      <p>I did the network infrastructure for about 100 devices, both wired and Wi-Fi. It was my first time with Teltonika RUTX routers, so I learned RutOS on the job.</p>
+      <ul class="tags"><li>Teltonika RUTX</li><li>RutOS</li><li>Wi-Fi</li></ul>
+    </div>
+    <div class="shot" data-hint="Add img/ugninis-skydas.png">
+      <img src="img/ugninis-skydas.jpg" alt="Ugninis skydas network" onerror="this.remove()">
+    </div>
+  </section>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">Ongoing</div>
+      <h2>Student organisation servers</h2>
+      <p>I maintain the student organisation's Minecraft and CS servers, keep the virtual machines updated, and work on improving the CS server management panel.</p>
+      <ul class="tags"><li>Linux</li><li>Virtual machines</li><li>Game servers</li></ul>
+    </div>
+    <div class="shot" data-hint="Add img/org-servers.png">
+      <img src="img/org-servers.png" alt="Student organisation servers" onerror="this.remove()">
+    </div>
+  </section>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">University</div>
+      <h2>Network design in Packet Tracer</h2>
+      <p>I designed a network for five schools in a district and configured it in Cisco Packet Tracer for a lab assignment: routing tables written by hand, VLANs and ACLs, with separate address ranges for public, admin and service links.</p>
+      <ul class="tags"><li>Cisco Packet Tracer</li><li>Static routing</li><li>VLANs</li><li>ACLs</li></ul>
+    </div>
+    <div class="shot gallery" data-hint="Add img/packet-tracer-1.png, -2.png, -3.png">
+      <div class="slides">
+        <img src="img/packet-tracer-1.png" alt="Packet Tracer topology" onerror="this.remove()">
+      </div>
+    </div>
+  </section>
+
+  <section class="stop">
+    <div class="text">
+      <div class="when">University</div>
+      <h2>Scripting and automation</h2>
+      <p>In Operating Systems 1 I wrote bash scripts for various tasks, such as extracting text from files and calculating values from file data. Now I'm in Scripting Languages, currently working in Bash.</p>
+      <ul class="tags"><li>Bash</li><li>C</li><li>Automation</li></ul>
+    </div>
+    <div class="shot" data-hint="Add img/backup-scripts.png (terminal screenshot)">
+      <img src="img/scripts.png" alt="Backup scripts in a terminal" onerror="this.remove()">
+    </div>
+  </section>
+
+</main>
+
+<script>
+const root = document.documentElement;
+const tbtn = document.getElementById('theme');
+const mq = matchMedia('(prefers-color-scheme: dark)');
+function isDark(){
+  const t = root.dataset.theme;
+  return t ? t === 'dark' : mq.matches;
+}
+function label(){ tbtn.textContent = isDark() ? 'Light' : 'Dark'; }
+try { const saved = localStorage.getItem('theme'); if (saved) root.dataset.theme = saved; } catch(e){}
+tbtn.addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  root.dataset.theme = next;
+  try { localStorage.setItem('theme', next); } catch(e){}
+  label();
+});
+mq.addEventListener('change', label);
+label();
+
+addEventListener('load', () => {
+  document.querySelectorAll('.gallery').forEach(g => {
+    const sl = g.querySelector('.slides');
+    const imgs = [...sl.children];
+    const fitFrameToImage = (index) => {
+      const img = imgs[index];
+      if (img.naturalWidth && img.naturalHeight) {
+        g.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+      }
+    };
+    if (imgs.length === 0) return;
+    if (imgs.length === 1) {
+      imgs[0].addEventListener('load', () => fitFrameToImage(0), { once: true });
+      fitFrameToImage(0);
+      return;
+    }
+    const d = document.createElement('div');
+    d.className = 'dots';
+    imgs.forEach((im, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Picture ' + (i + 1));
+      b.onclick = () => {
+        fitFrameToImage(i);
+        sl.scrollTo({ left: i * sl.clientWidth, behavior: 'auto' });
+      };
+      d.appendChild(b);
+    });
+    g.appendChild(d);
+    const upd = () => {
+      const i = Math.round(sl.scrollLeft / sl.clientWidth);
+      fitFrameToImage(i);
+      g.dataset.slide = i;
+      [...d.children].forEach((b, j) => b.classList.toggle('on', j === i));
+    };
+    imgs.forEach(im => im.addEventListener('load', upd, { once: true }));
+    sl.addEventListener('scroll', upd, { passive: true });
+    upd();
+  });
+});
+
+const stops = document.querySelectorAll('.stop');
+const fill = document.getElementById('fill');
+const road = document.getElementById('road');
+
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.35 });
+stops.forEach(s => io.observe(s));
+
+function draw() {
+  const r = road.getBoundingClientRect();
+  const mid = window.innerHeight * 0.55;
+  const lineEnd = window.innerHeight * 0.12;
+  const lineHeight = Math.max(0, r.height - lineEnd);
+  const naturalHeight = Math.max(0, Math.min(lineHeight, mid - r.top));
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const finishDistance = window.innerHeight * 0.4;
+  const finishProgress = Math.max(0, Math.min(1,
+    (window.scrollY - (maxScroll - finishDistance)) / finishDistance
+  ));
+  const h = naturalHeight + (lineHeight - naturalHeight) * finishProgress;
+  fill.style.height = h + 'px';
+}
+addEventListener('scroll', draw, { passive: true });
+addEventListener('resize', draw);
+draw();
+</script>
+</body>
+</html>
